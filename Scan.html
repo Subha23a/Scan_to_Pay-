@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scan to Pay - QR Code Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1c1c1c, #232526);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      background: #2c3e50;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 255, 170, 0.4);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      animation: fadeIn 1s ease-in;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #00ffc8;
+      text-shadow: 0 0 10px #00ffc8aa;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1em;
+      border: none;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #00ffc8;
+      color: #000;
+      border: none;
+      font-size: 1em;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #00caa6;
+    }
+
+    #qrcode {
+      margin-top: 20px;
+      padding: 10px;
+      background: #fff;
+      display: inline-block;
+      border-radius: 8px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 20px;
+      }
+
+      h2 {
+        font-size: 1.2em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>💰 Scan to Pay</h2>
+    <input type="text" id="merchantInput" placeholder="Merchant Name (e.g., Store ABC)" />
+    <input type="number" id="amountInput" placeholder="Amount (e.g., 499.99)" min="0.01" step="0.01" />
+    <input type="text" id="urlInput" placeholder="Payment URL (optional)" />
+    <button onclick="generateQRCode()">Generate Payment QR</button>
+    <div id="qrcode"></div>
+  </div>
+
+  <!-- QRCode.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    let qrcode;
+
+    function generateQRCode() {
+      const merchant = document.getElementById("merchantInput").value.trim();
+      const amount = document.getElementById("amountInput").value.trim();
+      const url = document.getElementById("urlInput").value.trim();
+      const qrContainer = document.getElementById("qrcode");
+
+      qrContainer.innerHTML = ""; // clear previous QR
+
+      if (!merchant || !amount) {
+        alert("Please enter both merchant name and amount.");
+        return;
+      }
+
+      // Construct the payment data (you can format this as needed for your system)
+      const paymentData = {
+        merchant: merchant,
+        amount: parseFloat(amount).toFixed(2),
+        url: url || "https://example.com/payment",
+        timestamp: new Date().toISOString()
+      };
+
+      const encodedData = JSON.stringify(paymentData);
+
+      qrcode = new QRCode(qrContainer, {
+        text: encodedData,
+        width: 220,
+        height: 220,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+  </script>
+
+</body>
+</html>
